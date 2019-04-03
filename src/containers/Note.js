@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import React, {Component} from "react";
+import {ControlLabel, FormControl, FormGroup} from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import { API, Storage } from "aws-amplify";
+import {API, Storage} from "aws-amplify";
 import config from "../config";
 import "./Note.css";
-import { s3Upload } from "../libs/awslibs";
+import {s3Upload} from "../libs/awslibs";
 
 
 export default class Notes extends Component {
@@ -19,10 +19,12 @@ export default class Notes extends Component {
             attachmentURL: null
         };
     }
+
     async componentDidMount() {
         try {
             let attachmentURL;
-            const note = await this.getNote(); const { content, attachment } = note;
+            const note = await this.getNote();
+            const {content, attachment} = note;
             if (attachment) {
                 attachmentURL = await Storage.vault.get(attachment);
             }
@@ -39,6 +41,7 @@ export default class Notes extends Component {
     getNote() {
         return API.get("notes", `/notes/${this.props.match.params.id}`);
     }
+
     saveNote(note) {
         return API.put("notes",
             `/notes/${this.props.match.params.id}`,
@@ -48,32 +51,45 @@ export default class Notes extends Component {
         );
     }
 
-    handleSubmit = async event => { let attachment;
+    handleSubmit = async event => {
+        let attachment;
         event.preventDefault();
-        if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) { alert(`Please pick a file smaller than
-${config.MAX_ATTACHMENT_SIZE/1000000} MB.`); return;
+        if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
+            alert(`Please pick a file smaller than
+${config.MAX_ATTACHMENT_SIZE / 1000000} MB.`);
+            return;
         }
-        this.setState({ isLoading: true });
+        this.setState({isLoading: true});
         try {
             if (this.file) {
-                attachment = await s3Upload(this.file); }
+                attachment = await s3Upload(this.file);
+            }
             await this.saveNote({
                 content: this.state.content,
                 attachment: attachment || this.state.note.attachment
             });
-            this.props.history.push("/"); } catch (e) {
+            this.props.history.push("/");
+        } catch (e) {
             alert(e);
-            this.setState({ isLoading: false }); }
-    }
+            this.setState({isLoading: false});
+        }
+    };
+
     validateForm() {
-        return this.state.content.length > 0; }
+        return this.state.content.length > 0;
+    }
+
     formatFilename(str) {
         return str.replace(/^\w+-/, "");
     }
-    handleChange = event => { this.setState({
-        [event.target.id]: event.target.value });
+
+    handleChange = event => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
     }
-    handleFileChange = event => { this.file = event.target.files[0];
+    handleFileChange = event => {
+        this.file = event.target.files[0];
     }
     handleSubmit = async event => {
         event.preventDefault();
@@ -85,38 +101,51 @@ ${config.MAX_ATTACHMENT_SIZE / 1000000} MB.`);
 
         this.setState({isLoading: true});
     }
-    handleDelete = async event => { event.preventDefault();
+    handleDelete = async event => {
+        event.preventDefault();
         const confirmed = window.confirm(
             "Are you sure you want to delete this note?"
         );
-        if (!confirmed) { return;
+        if (!confirmed) {
+            return;
         }
-        this.setState({ isDeleting: true }); }
-    render() { return (
-        <div className="Notes"> {this.state.note &&
-        <form onSubmit={this.handleSubmit}> <FormGroup controlId="content">
-            <FormControl onChange={this.handleChange} value={this.state.content} componentClass="textarea"
-            />
-        </FormGroup> {this.state.note.attachment &&
-        <FormGroup> <ControlLabel>Attachment</ControlLabel> <FormControl.Static>
-            <a
-                target="_blank"
-                rel="noopener noreferrer" href={this.state.attachmentURL}>
-                {this.formatFilename(this.state.note.attachment)} </a>
-        </FormControl.Static> </FormGroup>}
-            <FormGroup controlId="file"> {!this.state.note.attachment &&
-            <ControlLabel>Attachment</ControlLabel>}
-                <FormControl onChange={this.handleFileChange} type="file"/>
-            </FormGroup> <LoaderButton
-                block
-                bsStyle="primary"
-                bsSize="large" disabled={!this.validateForm()} type="submit" isLoading={this.state.isLoading} text="Save" loadingText="Saving..."
-            /> <LoaderButton
-                block
-                bsStyle="danger"
-                bsSize="large" isLoading={this.state.isDeleting} onClick={this.handleDelete} text="Delete" loadingText="Deleting..."
-            /> </form>}
-            </div> );
-        }
+        this.setState({isDeleting: true});
+    }
+
+    render() {
+        return (
+            <div className="Notes">
+                {
+                    this.state.note &&
+                    <form onSubmit={this.handleSubmit}><FormGroup controlId="content">
+                        <FormControl onChange={this.handleChange} value={this.state.content} componentClass="textarea"/>
+                    </FormGroup> {
+                        this.state.note.attachment &&
+                        <FormGroup>
+                            <ControlLabel>Attachment</ControlLabel>
+                            <FormControl.Static>
+
+                                <a target="_blank"
+                                   rel="noopener noreferrer" href={this.state.attachmentURL}>
+                                    {this.formatFilename(this.state.note.attachment)}
+                                </a>
+                            </FormControl.Static> </FormGroup>}
+                        <FormGroup controlId="file"> {!this.state.note.attachment &&
+                        <ControlLabel>Attachment</ControlLabel>}
+                            <FormControl onChange={this.handleFileChange} type="file"/>
+                        </FormGroup> <LoaderButton
+                            block
+                            bsStyle="primary"
+                            bsSize="large" disabled={!this.validateForm()} type="submit"
+                            isLoading={this.state.isLoading}
+                            text="Save" loadingText="Saving..."/>
+                        <LoaderButton
+                            block
+                            bsStyle="danger"
+                            bsSize="large" isLoading={this.state.isDeleting} onClick={this.handleDelete} text="Delete"
+                            loadingText="Deleting..."/>
+                    </form>}
+            </div>);
+    }
 
 }
