@@ -14,8 +14,8 @@ Routes:
 -  `/signup` - to signup a new use. It needs email  and password with confirm password. Validations are applied wherever necessary. On Signup a confirmation code page is shown.
 -  `/login` - used to Login by verified email and password.
 -  `/` - to list all notes and a link to create a new Note. Header will have logo and logout button, only authorised user can access this pages.
--  '/notes/new' - to create new Note
--  '/notes/:noteid' - to view/edit/delete a note
+-  '/notes/new' - to create new Note, only authorised user can access this pages.
+-  '/notes/:noteid' - to view/edit/delete a note, only authorised user can access this pages.
 
 ### Error handling
 
