@@ -6,5 +6,6 @@ import { Link } from "react-router-dom";
 it('renders welcome message', () => {
     const wrapper = shallow(<App />);
     const node = <Link to="/">EasyNotes</Link>;
-    // s
+    // expect(wrapper.contains(node)).toBe(true);
+    // expect(wrapper.contains(node)).toEqual(true);
 });
