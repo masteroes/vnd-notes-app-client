@@ -54,6 +54,7 @@ export default class SignUp extends Component {
             });
         }catch (e) {
             alert(e.message);
+            this.setState({isLoading: false});
         }
         this.setState({isLoading: false});
 

@@ -37,6 +37,7 @@ export default class Login extends Component {
 
         }catch(e) {
             alert(e.message);
+            this.setState({ isLoading: false });
         }
     };
 
