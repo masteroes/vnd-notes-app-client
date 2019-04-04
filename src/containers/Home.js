@@ -16,7 +16,8 @@ export default class Home extends Component {
             return;
         }
         try {
-            const notes = await this.notes(); this.setState({ notes });
+            const notes = await this.notes();
+            this.setState({ notes });
         } catch (e) {
             alert(e);
         }

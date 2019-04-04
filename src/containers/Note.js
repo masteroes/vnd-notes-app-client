@@ -43,6 +43,7 @@ export default class Notes extends Component {
     }
 
     saveNote(note) {
+        console.log("__________",this.props.match.params.id);
         return API.put("notes",
             `/notes/${this.props.match.params.id}`,
             {
@@ -51,12 +52,16 @@ export default class Notes extends Component {
         );
     }
 
+    deleteNote() {
+        return API.del("notes", `/notes/${this.props.match.params.id}`);
+    }
+
+
     handleSubmit = async event => {
         let attachment;
         event.preventDefault();
         if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
-            alert(`Please pick a file smaller than
-${config.MAX_ATTACHMENT_SIZE / 1000000} MB.`);
+            alert(`Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE / 1000000} MB.`);
             return;
         }
         this.setState({isLoading: true});
@@ -91,16 +96,7 @@ ${config.MAX_ATTACHMENT_SIZE / 1000000} MB.`);
     handleFileChange = event => {
         this.file = event.target.files[0];
     }
-    handleSubmit = async event => {
-        event.preventDefault();
-        if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
-            alert(`Please pick a file smaller than
-${config.MAX_ATTACHMENT_SIZE / 1000000} MB.`);
-            return;
-        }
 
-        this.setState({isLoading: true});
-    }
     handleDelete = async event => {
         event.preventDefault();
         const confirmed = window.confirm(
@@ -110,7 +106,17 @@ ${config.MAX_ATTACHMENT_SIZE / 1000000} MB.`);
             return;
         }
         this.setState({isDeleting: true});
-    }
+
+        try {
+            await this.deleteNote();
+            this.props.history.push("/");
+            this.setState({ isDeleting: false });
+        } catch (e) {
+            console.log(e);
+            this.setState({ isDeleting: false });
+            await this.props.history.push("/");
+        }
+    };
 
     render() {
         return (
