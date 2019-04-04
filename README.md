@@ -1,4 +1,4 @@
-# vnd-notes-loopback-api
+# vnd-notes-app-client
 
 ## React
 
