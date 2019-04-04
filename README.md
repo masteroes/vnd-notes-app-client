@@ -1,6 +1,6 @@
 # vnd-notes-loopback-api
 
-## React 8+
+## React
 
 ## Description
 
